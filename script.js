@@ -14,14 +14,15 @@ function renderPage() {
   container.innerHTML = '';
 
   pdfDoc.getPage(pageNum).then(page => {
-    const viewport = page.getViewport({ scale: 1 }); 
+    const viewport = page.getViewport({ scale: 1 });
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    // Ajuste l'échelle pour remplir ~90% de la largeur
-    const scale = (window.innerWidth * 0.9) / viewport.width;
-    const scaledViewport = page.getViewport({ scale });
+    // Largeur max pour simuler un livre de poche
+    const maxWidth = 400; // ~ format livre de poche en px
+    const scale = Math.min((window.innerWidth * 0.8) / viewport.width, maxWidth / viewport.width);
 
+    const scaledViewport = page.getViewport({ scale });
     canvas.width = scaledViewport.width;
     canvas.height = scaledViewport.height;
     container.appendChild(canvas);
@@ -41,7 +42,7 @@ document.getElementById('next').addEventListener('click', () => {
   if (pageNum < pdfDoc.numPages) { pageNum++; renderPage(); }
 });
 
-// Navigation clavier (flèches gauche/droite)
+// Navigation clavier
 window.addEventListener('keydown', (e) => {
   if (e.key === "ArrowLeft") {
     if (pageNum > 1) { pageNum--; renderPage(); }
