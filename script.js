@@ -1,4 +1,4 @@
-const url = 'mon-document.pdf'; // Nom exact du PDF
+const url = 'mon-document.pdf'; // Nom exact de ton PDF
 let pdfDoc = null;
 let pageNum = 1;
 
@@ -14,13 +14,19 @@ function renderPage() {
   container.innerHTML = '';
 
   pdfDoc.getPage(pageNum).then(page => {
-    const viewport = page.getViewport({ scale: 1.5 });
+    const viewport = page.getViewport({ scale: 1 }); // échelle initiale 1
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+
+    // Calcul automatique de l'échelle pour que le PDF remplisse la largeur
+    const scale = (window.innerWidth * 0.9) / viewport.width; // 90% de la largeur de l'écran
+    const scaledViewport = page.getViewport({ scale });
+
+    canvas.width = scaledViewport.width;
+    canvas.height = scaledViewport.height;
     container.appendChild(canvas);
-    page.render({ canvasContext: ctx, viewport: viewport });
+
+    page.render({ canvasContext: ctx, viewport: scaledViewport });
   });
 
   pageInfo.textContent = `Page ${pageNum} / ${pdfDoc.numPages}`;
@@ -38,4 +44,9 @@ document.getElementById('next').addEventListener('click', () => {
     pageNum++;
     renderPage();
   }
+});
+
+// Recalculer l'échelle si l'utilisateur redimensionne la fenêtre
+window.addEventListener('resize', () => {
+  if (pdfDoc) renderPage();
 });
