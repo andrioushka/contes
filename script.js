@@ -1,7 +1,4 @@
-
-
-
-const url = 'mon-document.pdf'; // ton PDF
+const url = 'mon-document.pdf'; // Nom exact du PDF
 let pdfDoc = null;
 let pageNum = 1;
 
@@ -10,40 +7,35 @@ const pageInfo = document.getElementById('page-info');
 
 pdfjsLib.getDocument(url).promise.then(doc => {
   pdfDoc = doc;
-  renderPages();
+  renderPage();
 });
 
-function renderPages() {
+function renderPage() {
   container.innerHTML = '';
-  
-  const renderPage = (num) => {
-    pdfDoc.getPage(num).then(page => {
-      const viewport = page.getViewport({ scale: 1.5 });
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-      container.appendChild(canvas);
-      page.render({ canvasContext: context, viewport: viewport });
-    });
-  }
 
-  renderPage(pageNum);
-  if (pageNum + 1 <= pdfDoc.numPages) renderPage(pageNum + 1);
+  pdfDoc.getPage(pageNum).then(page => {
+    const viewport = page.getViewport({ scale: 1.5 });
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    container.appendChild(canvas);
+    page.render({ canvasContext: ctx, viewport: viewport });
+  });
 
-  pageInfo.textContent = `Pages ${pageNum} - ${Math.min(pageNum + 1, pdfDoc.numPages)} / ${pdfDoc.numPages}`;
+  pageInfo.textContent = `Page ${pageNum} / ${pdfDoc.numPages}`;
 }
 
 document.getElementById('prev').addEventListener('click', () => {
-  if (pageNum > 2) {
-    pageNum -= 2;
-    renderPages();
+  if (pageNum > 1) {
+    pageNum--;
+    renderPage();
   }
 });
 
 document.getElementById('next').addEventListener('click', () => {
-  if (pageNum + 2 <= pdfDoc.numPages + 1) {
-    pageNum += 2;
-    renderPages();
+  if (pageNum < pdfDoc.numPages) {
+    pageNum++;
+    renderPage();
   }
 });
