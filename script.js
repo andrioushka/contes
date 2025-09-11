@@ -1,57 +1,55 @@
-const url = 'mon-document.pdf'; // Nom exact de ton PDF
 let pdfDoc = null;
-let pageNum = 1;
+let currentPage = 1;
+const scale = 1.2;
+const canvas = document.getElementById("pdf-canvas");
+const ctx = canvas.getContext("2d");
+const pageInfo = document.getElementById("page-info");
 
-const container = document.getElementById('pdf-container');
-const pageInfo = document.getElementById('page-info');
+// Charger un PDF
+async function loadPDF(url) {
+  pdfDoc = await pdfjsLib.getDocument(url).promise;
+  currentPage = 1;
+  renderPage(currentPage);
+}
 
-pdfjsLib.getDocument(url).promise.then(doc => {
-  pdfDoc = doc;
-  renderPage();
-});
+// Afficher une page
+async function renderPage(num) {
+  const page = await pdfDoc.getPage(num);
+  const viewport = page.getViewport({ scale });
 
-function renderPage() {
-  container.innerHTML = '';
+  canvas.height = viewport.height;
+  canvas.width = viewport.width;
 
-  pdfDoc.getPage(pageNum).then(page => {
-    const viewport = page.getViewport({ scale: 1 });
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+  await page.render({ canvasContext: ctx, viewport }).promise;
 
-    // Largeur max pour simuler un livre de poche
-    const maxWidth = 400; // ~ format livre de poche en px
-    const scale = Math.min((window.innerWidth * 0.8) / viewport.width, maxWidth / viewport.width);
-
-    const scaledViewport = page.getViewport({ scale });
-    canvas.width = scaledViewport.width;
-    canvas.height = scaledViewport.height;
-    container.appendChild(canvas);
-
-    page.render({ canvasContext: ctx, viewport: scaledViewport });
-  });
-
-  pageInfo.textContent = `Page ${pageNum} / ${pdfDoc.numPages}`;
+  pageInfo.textContent = `Page ${num} / ${pdfDoc.numPages}`;
 }
 
 // Boutons navigation
-document.getElementById('prev').addEventListener('click', () => {
-  if (pageNum > 1) { pageNum--; renderPage(); }
-});
-
-document.getElementById('next').addEventListener('click', () => {
-  if (pageNum < pdfDoc.numPages) { pageNum++; renderPage(); }
-});
-
-// Navigation clavier
-window.addEventListener('keydown', (e) => {
-  if (e.key === "ArrowLeft") {
-    if (pageNum > 1) { pageNum--; renderPage(); }
-  } else if (e.key === "ArrowRight") {
-    if (pageNum < pdfDoc.numPages) { pageNum++; renderPage(); }
+document.getElementById("prev").addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    renderPage(currentPage);
   }
 });
 
-// Redimensionnement dynamique
-window.addEventListener('resize', () => {
-  if (pdfDoc) renderPage();
+document.getElementById("next").addEventListener("click", () => {
+  if (currentPage < pdfDoc.numPages) {
+    currentPage++;
+    renderPage(currentPage);
+  }
 });
+
+// Flèches clavier
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft" && currentPage > 1) {
+    currentPage--;
+    renderPage(currentPage);
+  } else if (e.key === "ArrowRight" && currentPage < pdfDoc.numPages) {
+    currentPage++;
+    renderPage(currentPage);
+  }
+});
+
+// Charger le PDF par défaut
+loadPDF("document1.pdf");

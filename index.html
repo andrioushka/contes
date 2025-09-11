@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Visionneuse PDF avec Menu</title>
   <link rel="stylesheet" href="style.css">
-  <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
 </head>
 <body>
   <div id="container">
     <!-- Zone principale pour afficher le PDF -->
     <main id="pdf-viewer">
-      <div id="pdf-container">
-        <canvas id="pdf-canvas"></canvas>
-      </div>
+      <canvas id="pdf-canvas"></canvas>
       <div id="controls">
         <button id="prev">◀ Précédent</button>
         <span id="page-info"></span>
@@ -26,8 +23,8 @@
     <aside id="menu">
       <h2>Documents</h2>
       <ul>
-        <li><button onclick="loadPDF('mon-document.pdf')">Esotérique</button></li>
-        <li><button onclick="loadPDF('mon-document-2.pdf')">Zombie</button></li>
+        <li><button onclick="loadPDF('document1.pdf')">Document 1</button></li>
+        <li><button onclick="loadPDF('document2.pdf')">Document 2</button></li>
         <li><button onclick="loadPDF('document3.pdf')">Document 3</button></li>
       </ul>
     </aside>
