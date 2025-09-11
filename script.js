@@ -52,4 +52,4 @@ document.addEventListener("keydown", (e) => {
 });
 
 // Charger le PDF par défaut
-loadPDF("document1.pdf");
+loadPDF("mon-document.pdf");
