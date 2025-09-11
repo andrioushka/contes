@@ -3,23 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> </title>
+  <title>Visionneuse PDF avec Menu</title>
   <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1> </h1>
-
-  <div id="pdf-container"></div>
-
-  <div id="controls">
-    <button id="prev">⬅️ Précédent</button>
-    <span id="page-info"></span>
-    <button id="next">Suivant ➡️</button>
-  </div>
-
   <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
-  <!-- Script personnalisé -->
+</head>
+<body>
+  <div id="container">
+    <!-- Zone principale pour afficher le PDF -->
+    <main id="pdf-viewer">
+      <div id="pdf-container">
+        <canvas id="pdf-canvas"></canvas>
+      </div>
+      <div id="controls">
+        <button id="prev">◀ Précédent</button>
+        <span id="page-info"></span>
+        <button id="next">Suivant ▶</button>
+      </div>
+    </main>
+
+    <!-- Menu latéral -->
+    <aside id="menu">
+      <h2>Documents</h2>
+      <ul>
+        <li><button onclick="loadPDF('mon-document.pdf')">Esotérique</button></li>
+        <li><button onclick="loadPDF('mon-document-2.pdf')">Zombie</button></li>
+        <li><button onclick="loadPDF('document3.pdf')">Document 3</button></li>
+      </ul>
+    </aside>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
